@@ -25,7 +25,6 @@ export class ChangeName {
       return;
     }
 
-    console.log(scoreboard);
     scoreboard.name = cmd.args.newName;
     await updateScoreboard(scoreboard, cmd);
   }
