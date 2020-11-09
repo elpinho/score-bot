@@ -34,6 +34,6 @@ export abstract class ShowBoards {
       list += '\n' + pad(board.name, sizeCol1) + pad(created, sizeCol2) + pad(updated, sizeCol3);
     });
 
-    return list + '\n' + pad('', totalSize, '-') + '`';
+    return list + '`';
   }
 }

@@ -2,9 +2,7 @@ import { CommandMessage, CommandNotFound, Description, Discord } from '@typeit/d
 import * as path from 'path';
 
 @Discord('_', {
-  import: [
-    path.join(__dirname, 'commands', '*.ts'),
-  ],
+  import: [path.join(__dirname, 'commands', '*.ts')],
 })
 @Description('Discord bot to keep track of scores')
 export abstract class ScoreBot {

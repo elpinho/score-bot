@@ -3,6 +3,7 @@ import { findScoreboard } from '../services/find-scoreboard';
 import { reply } from '../utils/reply';
 import pad from 'pad';
 import { IScore } from '../model/score';
+import { IScoreboard } from '../model/scoreboard';
 
 interface ShowBoardArgs {
   name?: string;
@@ -35,32 +36,51 @@ export class ShowBoard {
       '\n';
     message += pad('', totalSize, '-');
 
-    const sortedKeys = Array.from(scoreboard.scores.keys()).sort(
-      (a, b) => this._calcKdr(scoreboard.scores.get(b)) - this._calcKdr(scoreboard.scores.get(a))
-    );
+    const sortedKeys = this._sort(scoreboard);
 
-    sortedKeys.forEach((key) => {
+    for (const key of sortedKeys) {
       const score = scoreboard.scores.get(key);
-      const user = cmd.client.users.resolve(key);
+      let user = cmd.client.users.cache.find((u) => u.id === key);
+      if (!user) {
+        user = await cmd.client.users.fetch(key);
+      }
 
       message +=
         '\n' +
         pad(user ? user.username : key, sizeCol1) +
         pad(String(score.wins), sizeCol2) +
         pad(String(score.losses), sizeCol3) +
-        pad(String(score.losses + score.wins), sizeCol4) +
-        pad(this._calcKdr(score).toFixed(2), sizeCol5);
-    });
+        pad(String(score.wins + score.losses), sizeCol4) +
+        pad(this._calcWlr(score).toFixed(2), sizeCol5);
+    }
 
-    message += '\n' + pad('', totalSize, '-');
     reply(cmd, message + '`');
   }
 
-  private _calcKdr(score: IScore): number {
+  private _calcWlr(score: IScore): number {
     if (score.losses === 0) {
       return score.wins;
     }
 
     return score.wins / score.losses;
+  }
+
+  private _sort(scoreboard: IScoreboard) {
+    return Array.from(scoreboard.scores.keys()).sort((a, b) => {
+      const scoreA = scoreboard.scores.get(a);
+      const scoreB = scoreboard.scores.get(b);
+
+      const kdrDiff = this._calcWlr(scoreB) - this._calcWlr(scoreA);
+      if (kdrDiff !== 0) {
+        return kdrDiff;
+      }
+
+      const winsDiff = scoreB.wins - scoreB.wins;
+      if (winsDiff !== 0) {
+        return winsDiff;
+      }
+
+      return scoreA.losses - scoreB.losses;
+    });
   }
 }
