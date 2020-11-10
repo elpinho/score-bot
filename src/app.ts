@@ -11,7 +11,7 @@ export class Main {
   }
 
   static start() {
-    console.log('Connecting to the database')
+    console.log('Connecting to the database');
     initMongoose()
       .then(() => console.log('Connected to the database'))
       .catch((e) => {

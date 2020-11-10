@@ -1,5 +1,5 @@
 import { Command, CommandMessage, Infos } from '@typeit/discord';
-import { isAuthorAdmin } from '../utils/is-author-admin';
+import { hasPermission } from '../utils/has-permission';
 import { parseArgs } from '../utils/parse-args';
 import { findLatestScoreboard, findScoreboard } from '../services/find-scoreboard';
 import { IScoreboard } from '../model/scoreboard';
@@ -10,7 +10,7 @@ export abstract class AddWin {
   @Command('addwin')
   @Infos({ admin: true })
   async addWin(cmd: CommandMessage) {
-    if (!isAuthorAdmin(cmd) || cmd.mentions.users.size === 0) {
+    if (!hasPermission(cmd) || cmd.mentions.users.size === 0) {
       return;
     }
 

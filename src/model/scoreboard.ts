@@ -9,6 +9,7 @@ export interface IScoreboard extends Document {
   winsLabel?: string;
   lossesLabel?: string;
   wlrLabel?: string;
+  winRateLabel?: string;
 }
 
 const ScoreboardSchema: Schema = new Schema<IScoreboard>(
@@ -17,6 +18,7 @@ const ScoreboardSchema: Schema = new Schema<IScoreboard>(
     winsLabel: { type: String, default: 'Wins' },
     lossesLabel: { type: String, default: 'Losses' },
     wlrLabel: { type: String, default: 'WLR' },
+    winRateLabel: { type: String, default: 'Win Rate' },
     scores: {
       type: Map,
       of: new Schema({

@@ -1,7 +1,7 @@
 import { Command, CommandMessage, Infos } from '@typeit/discord';
 import { scoreboardModel } from '../model/scoreboard';
 import { reply } from '../utils/reply';
-import { isAuthorAdmin } from '../utils/is-author-admin';
+import { hasPermission } from '../utils/has-permission';
 import { findScoreboard } from '../services/find-scoreboard';
 
 interface AddBoardArgs {
@@ -12,7 +12,7 @@ export abstract class AddBoard {
   @Command('addboard :name')
   @Infos({ admin: true })
   async addBoard(cmd: CommandMessage<AddBoardArgs>) {
-    if (!isAuthorAdmin(cmd)) {
+    if (!hasPermission(cmd)) {
       return;
     }
 

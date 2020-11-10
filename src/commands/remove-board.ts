@@ -2,7 +2,7 @@ import { Command, CommandMessage, Infos } from '@typeit/discord';
 import { scoreboardModel } from '../model/scoreboard';
 import { findScoreboard, scoreboardByNameCondition } from '../services/find-scoreboard';
 import { reply } from '../utils/reply';
-import {isAuthorAdmin} from '../utils/is-author-admin';
+import {hasPermission} from '../utils/has-permission';
 
 interface RemoveBoardArgs {
   name: string;
@@ -12,7 +12,7 @@ export class RemoveBoard {
   @Command('removeboard :name')
   @Infos({ admin: true })
   async removeBoard(cmd: CommandMessage<RemoveBoardArgs>) {
-    if (!isAuthorAdmin(cmd)) {
+    if (!hasPermission(cmd)) {
       return;
     }
 

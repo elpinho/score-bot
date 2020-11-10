@@ -1,9 +1,8 @@
 import { Command, CommandMessage, Infos } from '@typeit/discord';
 import { findScoreboard } from '../services/find-scoreboard';
 import { reply } from '../utils/reply';
-import pad from 'pad';
 import { IScore } from '../model/score';
-import { IScoreboard } from '../model/scoreboard';
+import { TableBuilder } from '../services/table-builder';
 
 interface ShowBoardArgs {
   name?: string;
@@ -18,43 +17,83 @@ export class ShowBoard {
       return;
     }
 
-    let message = `Scoreboard **${scoreboard.name}**:\n\``;
+    const tableBuilder = new TableBuilder(
+      [
+        {
+          width: 25,
+          label: 'Name',
+          index: 1,
+        },
+        {
+          width: 10,
+          label: scoreboard.winsLabel,
+          index: 2,
+        },
+        {
+          width: 10,
+          label: scoreboard.lossesLabel,
+          index: 3,
+        },
+        {
+          width: 10,
+          label: 'Total',
+          index: 4,
+        },
+        {
+          width: 10,
+          label: scoreboard.wlrLabel,
+          index: 5,
+          format: (content: number) => content.toFixed(2),
+        },
+        {
+          width: 10,
+          label: scoreboard.winRateLabel,
+          index: 6,
+        },
+      ],
+      {
+        sortBy: 5,
+        sortDirection: 'desc',
+      }
+    );
 
-    const sizeCol1 = 25;
-    const sizeCol2 = 10;
-    const sizeCol3 = 10;
-    const sizeCol4 = 10;
-    const sizeCol5 = 10;
-    const totalSize = sizeCol1 + sizeCol2 + sizeCol3 + sizeCol4 + sizeCol5;
-
-    message +=
-      pad('Name', sizeCol1) +
-      pad(scoreboard.winsLabel, sizeCol2) +
-      pad(scoreboard.lossesLabel, sizeCol3) +
-      pad('Total', sizeCol4) +
-      pad(scoreboard.wlrLabel, sizeCol5, ' ') +
-      '\n';
-    message += pad('', totalSize, '-');
-
-    const sortedKeys = this._sort(scoreboard);
-
-    for (const key of sortedKeys) {
+    const keys = Array.from(scoreboard.scores.keys());
+    for (const key of keys) {
       const score = scoreboard.scores.get(key);
       let user = cmd.client.users.cache.find((u) => u.id === key);
       if (!user) {
         user = await cmd.client.users.fetch(key);
       }
 
-      message +=
-        '\n' +
-        pad(user ? user.username : key, sizeCol1) +
-        pad(String(score.wins), sizeCol2) +
-        pad(String(score.losses), sizeCol3) +
-        pad(String(score.wins + score.losses), sizeCol4) +
-        pad(this._calcWlr(score).toFixed(2), sizeCol5);
+      tableBuilder.addRow([
+        {
+          column: 'Name',
+          content: user ? user.username : key,
+        },
+        {
+          column: scoreboard.winsLabel,
+          content: score.wins,
+        },
+        {
+          column: scoreboard.lossesLabel,
+          content: score.losses,
+        },
+        {
+          column: 'Total',
+          content: score.wins + score.losses,
+        },
+        {
+          column: scoreboard.wlrLabel,
+          content: this._calcWlr(score),
+        },
+        {
+          column: scoreboard.winRateLabel,
+          content: this._calcWinRate(score),
+        },
+      ]);
     }
 
-    reply(cmd, message + '`');
+    reply(cmd, `Scoreboard **${scoreboard.name}**:\n${tableBuilder.build()}`);
   }
 
   private _calcWlr(score: IScore): number {
@@ -65,22 +104,12 @@ export class ShowBoard {
     return score.wins / score.losses;
   }
 
-  private _sort(scoreboard: IScoreboard) {
-    return Array.from(scoreboard.scores.keys()).sort((a, b) => {
-      const scoreA = scoreboard.scores.get(a);
-      const scoreB = scoreboard.scores.get(b);
+  private _calcWinRate(score: IScore): string {
+    const total = score.wins + score.losses;
+    if (total === 0) {
+      return '0%';
+    }
 
-      const kdrDiff = this._calcWlr(scoreB) - this._calcWlr(scoreA);
-      if (kdrDiff !== 0) {
-        return kdrDiff;
-      }
-
-      const winsDiff = scoreB.wins - scoreB.wins;
-      if (winsDiff !== 0) {
-        return winsDiff;
-      }
-
-      return scoreA.losses - scoreB.losses;
-    });
+    return `${((score.wins / total) * 100).toFixed(0)}%`;
   }
 }

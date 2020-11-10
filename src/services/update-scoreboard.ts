@@ -1,7 +1,7 @@
-import {IScoreboard, scoreboardModel} from '../model/scoreboard';
-import {scoreboardByNameCondition} from './find-scoreboard';
-import {CommandMessage} from '@typeit/discord';
-import {reply} from '../utils/reply';
+import { IScoreboard, scoreboardModel } from '../model/scoreboard';
+import { scoreboardByNameCondition } from './find-scoreboard';
+import { CommandMessage } from '@typeit/discord';
+import { reply } from '../utils/reply';
 
 export async function updateScoreboard(scoreboard: IScoreboard, cmd?: CommandMessage) {
   try {

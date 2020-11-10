@@ -1,6 +1,6 @@
 import { Command, CommandMessage, Infos } from '@typeit/discord';
 import { validArgs } from '../utils/valid-args';
-import { isAuthorAdmin } from '../utils/is-author-admin';
+import { hasPermission } from '../utils/has-permission';
 import { updateScore } from '../services/update-score';
 
 interface SetScoreArgs {
@@ -13,7 +13,7 @@ export abstract class SetScore {
   @Command('setscore :player :wins :losses :scoreboard')
   @Infos({ admin: true })
   async setScore(cmd: CommandMessage<SetScoreArgs>) {
-    if (!isAuthorAdmin(cmd)) {
+    if (!hasPermission(cmd)) {
       return;
     }
 

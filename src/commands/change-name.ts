@@ -1,5 +1,5 @@
 import { Command, CommandMessage, Infos } from '@typeit/discord';
-import { isAuthorAdmin } from '../utils/is-author-admin';
+import { hasPermission } from '../utils/has-permission';
 import { updateScoreboard } from '../services/update-scoreboard';
 import { findScoreboard } from '../services/find-scoreboard';
 
@@ -12,7 +12,7 @@ export class ChangeName {
   @Command('changename :oldName :newName')
   @Infos({ admin: true })
   async changeName(cmd: CommandMessage<ChangeNameArgs>) {
-    if (!isAuthorAdmin(cmd)) {
+    if (!hasPermission(cmd)) {
       return;
     }
 
