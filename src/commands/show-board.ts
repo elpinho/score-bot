@@ -23,36 +23,43 @@ export class ShowBoard {
           width: 25,
           label: 'Name',
           index: 1,
+          field: 'name',
         },
         {
-          width: 10,
+          width: 9,
           label: scoreboard.winsLabel,
           index: 2,
+          field: 'wins',
         },
         {
-          width: 10,
+          width: 9,
           label: scoreboard.lossesLabel,
           index: 3,
+          field: 'losses',
         },
         {
-          width: 10,
+          width: 9,
           label: 'Total',
           index: 4,
+          field: 'total',
         },
         {
-          width: 10,
+          width: 9,
           label: scoreboard.wlrLabel,
           index: 5,
           format: (content: number) => content.toFixed(2),
+          field: 'wlr',
         },
         {
-          width: 10,
+          width: 9,
           label: scoreboard.winRateLabel,
           index: 6,
+          format: (content) => `${(content * 100).toFixed(0)}%`,
+          field: 'winRate',
         },
       ],
       {
-        sortBy: 5,
+        sortBy: ['wlr', 'total'],
         sortDirection: 'desc',
       }
     );
@@ -65,38 +72,20 @@ export class ShowBoard {
         user = await cmd.client.users.fetch(key);
       }
 
-      tableBuilder.addRow([
-        {
-          column: 'Name',
-          content: user ? user.username : key,
-        },
-        {
-          column: scoreboard.winsLabel,
-          content: score.wins,
-        },
-        {
-          column: scoreboard.lossesLabel,
-          content: score.losses,
-        },
-        {
-          column: 'Total',
-          content: score.wins + score.losses,
-        },
-        {
-          column: scoreboard.wlrLabel,
-          content: this._calcWlr(score),
-        },
-        {
-          column: scoreboard.winRateLabel,
-          content: this._calcWinRate(score),
-        },
-      ]);
+      tableBuilder.addRows({
+        name: user ? user.username : key,
+        wins: score.wins,
+        losses: score.losses,
+        total: score.wins + score.losses,
+        wlr: ShowBoard._calcWlr(score),
+        winRate: ShowBoard._calcWinRate(score),
+      });
     }
 
     reply(cmd, `Scoreboard **${scoreboard.name}**:\n${tableBuilder.build()}`);
   }
 
-  private _calcWlr(score: IScore): number {
+  private static _calcWlr(score: IScore): number {
     if (score.losses === 0) {
       return score.wins;
     }
@@ -104,12 +93,12 @@ export class ShowBoard {
     return score.wins / score.losses;
   }
 
-  private _calcWinRate(score: IScore): string {
+  private static _calcWinRate(score: IScore): number {
     const total = score.wins + score.losses;
     if (total === 0) {
-      return '0%';
+      return 0;
     }
 
-    return `${((score.wins / total) * 100).toFixed(0)}%`;
+    return score.wins / total;
   }
 }

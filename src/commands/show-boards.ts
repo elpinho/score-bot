@@ -1,14 +1,14 @@
 import { Command, CommandMessage } from '@typeit/discord';
 import { scoreboardModel, IScoreboard } from '../model/scoreboard';
 import { reply } from '../utils/reply';
-import pad from 'pad';
 import { formatDate } from '../utils/format-date';
+import { TableBuilder } from '../services/table-builder';
 
 export abstract class ShowBoards {
   @Command('boards')
   async showBoards(cmd: CommandMessage) {
     try {
-      const boards = await scoreboardModel.find({}).sort({ updatedAt: -1 });
+      const boards = await scoreboardModel.find({}).sort({ updatedAt: -1 }).lean() as IScoreboard[];
       reply(cmd, this._makeList(boards));
     } catch (e) {
       reply(cmd, "I can't list the scoreboards right now.");
@@ -17,23 +17,30 @@ export abstract class ShowBoards {
   }
 
   private _makeList(boards: IScoreboard[]): string {
-    const sizeCol1 = 20;
-    const sizeCol2 = 13;
-    const sizeCol3 = 13;
-    const totalSize = sizeCol1 + sizeCol2 + sizeCol3;
+    const tableBuilder = new TableBuilder<IScoreboard>([
+      {
+        label: 'Name',
+        index: 1,
+        width: 20,
+        field: 'name',
+      },
+      {
+        label: 'Created',
+        index: 2,
+        width: 13,
+        format: (content) => formatDate(content),
+        field: 'createdAt',
+      },
+      {
+        label: 'Last Used',
+        index: 3,
+        width: 13,
+        format: (content) => formatDate(content),
+        field: 'updatedAt',
+      },
+    ]);
 
-    let list = 'Boards:\n`';
-
-    list += pad('Name', sizeCol1) + pad('Created', sizeCol2) + pad('Last Used', sizeCol3, ' ') + '\n';
-    list += pad('', totalSize, '-');
-
-    boards.forEach((board) => {
-      const created = formatDate(board['createdAt']);
-      const updated = formatDate(board['updatedAt']);
-
-      list += '\n' + pad(board.name, sizeCol1) + pad(created, sizeCol2) + pad(updated, sizeCol3);
-    });
-
-    return list + '`';
+    tableBuilder.addRows(...boards);
+    return `Boards:\n${tableBuilder.build()}`;
   }
 }

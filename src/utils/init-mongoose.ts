@@ -1,7 +1,6 @@
 import mongoose, { Mongoose } from 'mongoose';
 import { Db } from 'mongodb';
 
-
 export async function initMongoose(): Promise<Db> {
   const dbUrl = process.env.MONGODB_URL;
 
@@ -9,6 +8,7 @@ export async function initMongoose(): Promise<Db> {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
+    connectTimeoutMS: 15000,
   });
 
   mongoose.set('useFindAndModify', false);

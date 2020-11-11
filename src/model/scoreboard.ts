@@ -6,6 +6,9 @@ export interface IScoreboard extends Document {
   name: string;
   scores?: Map<string, IScore>;
 
+  createdAt?: Date;
+  updatedAt?: Date;
+
   winsLabel?: string;
   lossesLabel?: string;
   wlrLabel?: string;
