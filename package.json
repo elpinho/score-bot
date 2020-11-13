@@ -1,7 +1,10 @@
 {
   "main": "src/app.ts",
   "scripts": {
-    "start": "nodemon"
+    "start": "nodemon",
+    "start:prod": "node build/app.js",
+    "build": "tsc",
+    "postinstall": "yarn build"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
