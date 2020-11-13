@@ -8,8 +8,8 @@ export abstract class ShowBoards {
   @Command('boards')
   async showBoards(cmd: CommandMessage) {
     try {
-      const boards = await scoreboardModel.find({}).sort({ updatedAt: -1 }).lean() as IScoreboard[];
-      reply(cmd, this._makeList(boards));
+      const boards = await scoreboardModel.find({}).sort({ updatedAt: -1 }).lean();
+      reply(cmd, this._makeList(boards as IScoreboard[]));
     } catch (e) {
       reply(cmd, "I can't list the scoreboards right now.");
       console.error(e);

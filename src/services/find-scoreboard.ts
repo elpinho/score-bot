@@ -17,7 +17,7 @@ export async function findScoreboard(
     let scoreboard;
 
     if (name) {
-      scoreboard = await scoreboardModel.findOne(scoreboardByNameCondition(name));
+      scoreboard = await scoreboardModel.findOne(scoreboardByNameCondition(name)).lean();
     } else {
       scoreboard = findLatestScoreboard(cmd);
       // error message already sent
@@ -47,12 +47,12 @@ export async function findScoreboard(
 
 export async function findLatestScoreboard(cmd: CommandMessage): Promise<IScoreboard | null> {
   try {
-    const scoreboard = await scoreboardModel.findOne().sort({ createdAt: -1 });
+    const scoreboard = await scoreboardModel.findOne().sort({ createdAt: -1 }).lean();
     if (!scoreboard) {
       reply(cmd, 'Could not find a scoreboard.');
     }
 
-    return scoreboard;
+    return scoreboard as IScoreboard;
   } catch (e) {
     reply(cmd, 'Error while finding the scoreboard.');
     console.error(e);

@@ -40,7 +40,7 @@ export class TableBuilder<T> {
     // Header
 
     let result = `\`${this._buildRow(this._createHeader())}\n`;
-    result += pad('', this._totalWidth(), '-');
+    result += pad('', this._totalWidth(), '―');
 
     // Content
 
@@ -100,8 +100,8 @@ export class TableBuilder<T> {
       let diff = 0;
 
       // Go through each of the sortBy columns, ordered in descending priority
-      for (const columnIndex of this._options.sortBy) {
-        const field = this._columns.find((col) => col.index === columnIndex).field;
+      for (const columnField of this._options.sortBy) {
+        const field = this._columns.find((col) => col.field === columnField).field;
         diff = this._compareValues(a[field], b[field]);
 
         // Only continue if the cells are equal in the current column

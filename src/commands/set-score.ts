@@ -1,5 +1,5 @@
 import { Command, CommandMessage, Infos } from '@typeit/discord';
-import { validArgs } from '../utils/valid-args';
+import { argsMatch } from '../utils/args-match';
 import { hasPermission } from '../utils/has-permission';
 import { updateScore } from '../services/update-score';
 
@@ -17,7 +17,7 @@ export abstract class SetScore {
       return;
     }
 
-    if (!validArgs(cmd, /@[^\s]+ \d+ \d+ [^\s]+/)) {
+    if (!argsMatch(cmd, /@[^\s]+ \d+ \d+ [^\s]+/)) {
       return;
     }
 
