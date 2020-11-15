@@ -4,7 +4,8 @@
   "scripts": {
     "start": "nodemon",
     "start:prod": "node build/app.js",
-    "build": "tsc",
+    "build": "tsc && yarn cleantypes",
+    "cleantypes": "find build -type f -name *.d.ts -delete",
     "postinstall": "yarn build"
   },
   "devDependencies": {
