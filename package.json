@@ -32,8 +32,10 @@
     "moment": "^2.29.1",
     "mongoose": "^5.10.13",
     "pad": "^3.2.0",
+    "stream-to-string": "^1.2.0",
     "tslib": "^2.0.3",
-    "typedi": "^0.8.0"
+    "typedi": "^0.8.0",
+    "wetransfert": "^2.2.0"
   },
   "husky": {
     "hooks": {

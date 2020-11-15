@@ -26,15 +26,16 @@ export function checkPermissions(cmd: CommandMessage, permissions?: Permissions)
     return;
   }
 
-  if (cmd.member) {
-    for (const permission of permissions.values) {
-      if (permissions.operator === 'or' && cmd.member.hasPermission(permission)) {
-        return true;
-      }
+  // Merge default with given permissions
+  permissions = Object.assign({}, defaultPermissions, permissions);
 
-      if (permissions.operator === 'and' && !cmd.member.hasPermission(permission)) {
-        return false;
-      }
+  for (const permission of permissions.values) {
+    if (permissions.operator === 'or' && cmd.member.hasPermission(permission)) {
+      return true;
+    }
+
+    if (permissions.operator === 'and' && !cmd.member.hasPermission(permission)) {
+      return false;
     }
   }
 

@@ -18,9 +18,9 @@ interface IColumn<T> {
 }
 
 export class TableBuilder<T> {
-  private _columns: IColumn<T>[];
-  private _items: T[];
-  private _options: TableBuilderOptions<T>;
+  private readonly _columns: IColumn<T>[];
+  private readonly _items: T[];
+  private readonly _options: TableBuilderOptions<T>;
 
   constructor(columns?: IColumn<T>[], options?: TableBuilderOptions<T>) {
     this._columns = [TableBuilder._createIndexColumn()];
@@ -29,6 +29,8 @@ export class TableBuilder<T> {
     }
 
     this._items = [];
+
+    // Merge default with given options
     this._options = options ? Object.assign({}, defaultOptions, options) : defaultOptions;
   }
 
