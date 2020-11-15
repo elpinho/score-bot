@@ -1,9 +1,8 @@
 import { initMongoose } from './init-mongoose';
-import * as dotenv from 'dotenv';
+import { initDI } from './init-di';
+import './stop-handler';
 
-export default () => {
-  dotenv.config();
-
+export default ({ client }) => {
   console.log('Connecting to the database');
   initMongoose()
     .then(() => console.log('Connected to the database'))
@@ -11,4 +10,6 @@ export default () => {
       console.error(`Failed to connect to the database: ${e.message}`);
       console.error(e);
     });
+
+  initDI({ client });
 };

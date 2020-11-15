@@ -1,5 +1,6 @@
 {
   "main": "src/app.ts",
+  "license": "MIT",
   "scripts": {
     "start": "nodemon",
     "start:prod": "node build/app.js",

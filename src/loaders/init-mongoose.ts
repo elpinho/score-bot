@@ -3,6 +3,10 @@ import { Db } from 'mongodb';
 
 export async function initMongoose(): Promise<Db> {
   const dbUrl = process.env.MONGODB_URL;
+  if (!dbUrl) {
+    console.error('MongoDB URL not found! Please set the MONGODB_URL environment variable [in a .env file].');
+    return;
+  }
 
   const mng: Mongoose = await mongoose.connect(dbUrl, {
     useNewUrlParser: true,
