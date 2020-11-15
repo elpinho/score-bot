@@ -1,27 +1,16 @@
-import { IScore } from './score';
 import { Document, Schema } from 'mongoose';
-import * as mongoose from 'mongoose';
-
-export interface IScoreboard extends Document {
-  name: string;
-  scores?: Map<string, IScore>;
-
-  createdAt?: Date;
-  updatedAt?: Date;
-
-  winsLabel?: string;
-  lossesLabel?: string;
-  wlrLabel?: string;
-  winRateLabel?: string;
-}
+import mongoose from 'mongoose';
+import { IScoreboard } from '../../../models/scoreboard';
 
 const ScoreboardSchema: Schema = new Schema<IScoreboard>(
   {
     name: { type: String, required: true, unique: true, validate: /[^\s]+/ },
+
     winsLabel: { type: String, default: 'Wins' },
     lossesLabel: { type: String, default: 'Losses' },
     wlrLabel: { type: String, default: 'WLR' },
     winRateLabel: { type: String, default: 'Win Rate' },
+
     scores: {
       type: Map,
       of: new Schema({
@@ -34,4 +23,4 @@ const ScoreboardSchema: Schema = new Schema<IScoreboard>(
   { timestamps: true }
 );
 
-export const scoreboardModel = mongoose.model<IScoreboard>('Board', ScoreboardSchema);
+export const scoreboardModel = mongoose.model<IScoreboard & Document>('Board', ScoreboardSchema);

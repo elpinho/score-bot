@@ -1,15 +1,17 @@
 import { Command, CommandMessage } from '@typeit/discord';
-import { scoreboardModel, IScoreboard } from '../model/scoreboard';
+import { IScoreboard } from '../models/scoreboard';
 import { reply } from '../utils/reply';
 import { formatDate } from '../utils/format-date';
-import { TableBuilder } from '../services/table-builder';
+import { TableBuilder } from '../utils/table-builder';
+import { PersistenceContext } from '../persistence/persistence-context';
 
 export abstract class ShowBoards {
   @Command('boards')
   async showBoards(cmd: CommandMessage) {
     try {
-      const boards = await scoreboardModel.find({}).sort({ updatedAt: -1 }).lean();
-      reply(cmd, this._makeList(boards as IScoreboard[]));
+      const scoreboardRepo = PersistenceContext.scoreboards();
+      const boards = await scoreboardRepo.findAll({ sort: { updatedAt: -1 } });
+      reply(cmd, this._makeList(boards));
     } catch (e) {
       reply(cmd, "I can't list the scoreboards right now.");
       console.error(e);

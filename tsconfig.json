@@ -18,6 +18,11 @@
     ],
     "moduleResolution": "node"
   },
+  "include": [
+    "src/**/*",
+    ".eslintrc.js",
+    ".prettierrc.js"
+  ],
   "exclude": [
     "node_modules",
     "build"

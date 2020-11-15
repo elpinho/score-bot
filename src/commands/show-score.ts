@@ -5,7 +5,7 @@ import { User } from 'discord.js';
 import { createScoreboardTable } from '../services/create-scoreboard-table';
 import { reply } from '../utils/reply';
 
-export class ShowScore {
+export abstract class ShowScore {
   @Command('score')
   async showScore(cmd: CommandMessage) {
     const [scoreboardName, users] = ShowScore._parseArgs(cmd);
@@ -17,7 +17,6 @@ export class ShowScore {
     const scoreLabel = users.length === 1 ? 'Score' : 'Scores';
 
     const tableBuilder = await createScoreboardTable(
-      cmd.client,
       scoreboard,
       users.map((user) => user.id)
     );
@@ -33,7 +32,7 @@ export class ShowScore {
     if (args.length === 0) {
       users.push(cmd.author);
     } else {
-      if (!args[0].match(/<.+?>/)) {
+      if (!/<.+?>/.test(args[0])) {
         scoreboardName = args[0];
       }
 

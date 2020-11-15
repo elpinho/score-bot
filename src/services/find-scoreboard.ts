@@ -1,12 +1,11 @@
-import { scoreboardModel, IScoreboard } from '../model/scoreboard';
+import { IScoreboard } from '../models/scoreboard';
 import { CommandMessage } from '@typeit/discord';
 import { reply } from '../utils/reply';
+import { PersistenceContext } from '../persistence/persistence-context';
 
 interface FindScoreboardOptions {
   ignoreNotFoundError?: boolean;
 }
-
-export const scoreboardByNameCondition = (name: string) => ({ name: new RegExp(`^${name}$`, 'i') });
 
 export async function findScoreboard(
   cmd: CommandMessage,
@@ -16,11 +15,11 @@ export async function findScoreboard(
   try {
     let scoreboard;
 
+    const scoreboardRepo = PersistenceContext.scoreboards();
     if (name) {
-      scoreboard = await scoreboardModel.findOne(scoreboardByNameCondition(name)).lean();
+      scoreboard = await scoreboardRepo.findByName(name);
     } else {
-      scoreboard = findLatestScoreboard(cmd);
-      // error message already sent
+      scoreboard = await findLatestScoreboard(cmd);
       if (!scoreboard) {
         return;
       }
@@ -47,12 +46,13 @@ export async function findScoreboard(
 
 export async function findLatestScoreboard(cmd: CommandMessage): Promise<IScoreboard | null> {
   try {
-    const scoreboard = await scoreboardModel.findOne().sort({ createdAt: -1 }).lean();
+    const scoreboardRepo = PersistenceContext.scoreboards();
+    const scoreboard = await scoreboardRepo.findLatest();
     if (!scoreboard) {
       reply(cmd, 'Could not find a scoreboard.');
     }
 
-    return scoreboard as IScoreboard;
+    return scoreboard;
   } catch (e) {
     reply(cmd, 'Error while finding the scoreboard.');
     console.error(e);

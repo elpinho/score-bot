@@ -1,14 +1,14 @@
 import { Command, CommandMessage, Infos } from '@typeit/discord';
-import { scoreboardModel } from '../model/scoreboard';
-import { findScoreboard, scoreboardByNameCondition } from '../services/find-scoreboard';
+import { findScoreboard } from '../services/find-scoreboard';
 import { reply } from '../utils/reply';
-import {hasPermission} from '../utils/has-permission';
+import { hasPermission } from '../utils/has-permission';
+import { PersistenceContext } from '../persistence/persistence-context';
 
 interface RemoveBoardArgs {
   name: string;
 }
 
-export class RemoveBoard {
+export abstract class RemoveBoard {
   @Command('removeboard :name')
   @Infos({ admin: true })
   async removeBoard(cmd: CommandMessage<RemoveBoardArgs>) {
@@ -22,7 +22,8 @@ export class RemoveBoard {
     }
 
     try {
-      await scoreboardModel.deleteOne(scoreboardByNameCondition(cmd.args.name));
+      const scoreboardRepo = PersistenceContext.scoreboards();
+      await scoreboardRepo.deleteByName(cmd.args.name);
       reply(cmd, `Removed the scoreboard **${scoreboard.name}**`);
     } catch (e) {
       reply(cmd, `Could not remove the scoreboard **${scoreboard.name}**`);

@@ -8,6 +8,7 @@ import * as path from 'path';
 export abstract class ScoreBot {
   @CommandNotFound()
   notFoundA(command: CommandMessage) {
+    // noinspection JSIgnoredPromiseFromCall
     command.reply('Command not found');
   }
 }

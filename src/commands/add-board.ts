@@ -1,8 +1,8 @@
 import { Command, CommandMessage, Infos } from '@typeit/discord';
-import { scoreboardModel } from '../model/scoreboard';
 import { reply } from '../utils/reply';
 import { hasPermission } from '../utils/has-permission';
 import { findScoreboard } from '../services/find-scoreboard';
+import { PersistenceContext } from '../persistence/persistence-context';
 
 interface AddBoardArgs {
   name: string;
@@ -23,7 +23,8 @@ export abstract class AddBoard {
     }
 
     try {
-      const created = await scoreboardModel.create({
+      const scoreboardRepo = PersistenceContext.scoreboards();
+      const created = await scoreboardRepo.add({
         name: cmd.args.name,
       });
       reply(cmd, `Created scoreboard **${created.name}**.`);

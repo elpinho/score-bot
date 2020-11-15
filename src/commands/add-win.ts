@@ -2,9 +2,9 @@ import { Command, CommandMessage, Infos } from '@typeit/discord';
 import { hasPermission } from '../utils/has-permission';
 import { parseArgs } from '../utils/parse-args';
 import { findLatestScoreboard, findScoreboard } from '../services/find-scoreboard';
-import { IScoreboard } from '../model/scoreboard';
-
+import { IScoreboard } from '../models/scoreboard';
 import { updateScoreboard } from '../services/update-scoreboard';
+import { mapValue, setMapValue } from '../utils/map';
 
 export abstract class AddWin {
   @Command('addwin')
@@ -31,10 +31,10 @@ export abstract class AddWin {
     }
 
     cmd.mentions.users.forEach((user) => {
-      const score = scoreboard.scores.get(user.id) || { wins: 0, losses: 0 };
+      const score = mapValue(scoreboard.scores, user.id) || { wins: 0, losses: 0 };
       score.wins++;
 
-      scoreboard.scores.set(user.id, score);
+      setMapValue(scoreboard.scores, user.id, score);
     });
 
     await updateScoreboard(scoreboard, cmd);

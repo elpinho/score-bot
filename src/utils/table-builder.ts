@@ -32,7 +32,7 @@ export class TableBuilder<T> {
     this._options = options ? Object.assign({}, defaultOptions, options) : defaultOptions;
   }
 
-  addRows(...rows: T[]) {
+  addRows(...rows: T[]): void {
     rows.forEach((row) => this._items.push(row));
   }
 

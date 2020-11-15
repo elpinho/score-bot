@@ -1,11 +1,10 @@
-import {Score} from '../model/score';
-import {TableBuilder} from './table-builder';
-import {mapKeys, mapValue} from '../utils/map';
-import {findUser} from './find-user';
-import {IScoreboard} from '../model/scoreboard';
-import {Client} from 'discord.js';
+import { Score } from '../models/score';
+import { TableBuilder } from '../utils/table-builder';
+import { mapKeys, mapValue } from '../utils/map';
+import { findUser } from './find-user';
+import { IScoreboard } from '../models/scoreboard';
 
-export async function createScoreboardTable(client: Client, scoreboard: IScoreboard, ids?: string[]): Promise<TableBuilder<Score>> {
+export async function createScoreboardTable(scoreboard: IScoreboard, ids?: string[]): Promise<TableBuilder<Score>> {
   const tableBuilder = new TableBuilder<Score>(
     [
       {
@@ -55,13 +54,13 @@ export async function createScoreboardTable(client: Client, scoreboard: IScorebo
 
   let keys = mapKeys(scoreboard.scores);
   if (ids) {
-    keys = keys.filter(key => ids.includes(key));
+    keys = keys.filter((key) => ids.includes(key));
   }
 
   for (const key of keys) {
-    const user = await findUser(key, client);
+    const user = await findUser(key);
     const name = user ? user.username : key;
-    const score = Score.clone({...mapValue(scoreboard.scores, key), name});
+    const score = Score.clone({ ...mapValue(scoreboard.scores, key), name });
     tableBuilder.addRows(score);
   }
 

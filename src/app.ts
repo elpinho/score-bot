@@ -1,31 +1,29 @@
 import { Client } from '@typeit/discord';
-import { initMongoose } from './utils/init-mongoose';
-
-require('dotenv').config();
+import { Container } from 'typedi';
+import loaders from './loaders';
 
 export class Main {
   private static _client: Client;
 
+  // noinspection JSUnusedGlobalSymbols
   static get Client(): Client {
     return this._client;
   }
 
   static start() {
-    console.log('Connecting to the database');
-    initMongoose()
-      .then(() => console.log('Connected to the database'))
-      .catch((e) => {
-        console.error(`Failed to connect to the database: ${e.message}`);
-        console.error(e);
-      });
-
-    console.log('Logging in');
+    loaders();
 
     this._client = new Client();
+    this._login();
+
+    Container.set(Client, this._client);
+  }
+
+  private static _login() {
     this._client
       .login(process.env.TOKEN, `${__dirname}/*.ts`, `${__dirname}/*.js`)
       .then(() => {
-        console.log('Successfully logged in');
+        console.log('Logged in');
       })
       .catch((e) => {
         console.error(`Failed to login: ${e.message}`);

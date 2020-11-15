@@ -32,7 +32,6 @@ export class Score implements IScore {
   }
 
   static clone(score: IScore | any) {
-    console.log(score);
     return new Score(score.wins, score.losses, score['name']);
   }
 }

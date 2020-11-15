@@ -8,7 +8,7 @@ interface ChangeNameArgs {
   newName: string;
 }
 
-export class ChangeName {
+export abstract class ChangeName {
   @Command('changename :oldName :newName')
   @Infos({ admin: true })
   async changeName(cmd: CommandMessage<ChangeNameArgs>) {
