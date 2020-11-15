@@ -4,7 +4,11 @@ import { PersistenceContext } from '../persistence/persistence-context';
 import { formatDate } from '../utils/format-date';
 import { reply } from '../utils/reply';
 import { Container } from 'typedi';
-import { ImportExportService } from '../services/import-export/import-export-service';
+import {
+  IImportExportService,
+  ImportExportEntities,
+  ImportExportService,
+} from '../services/import-export/import-export-service';
 
 export abstract class Export {
   @Command('export')
@@ -21,7 +25,7 @@ export abstract class Export {
     const label = `ScoreBot data from server ${cmd.guild.name} on ${formatDate(new Date())}`;
 
     try {
-      const service = Container.get(ImportExportService);
+      const service: IImportExportService<ImportExportEntities> = Container.get(ImportExportService);
       const output = await service.exportData({
         fileName,
         label,

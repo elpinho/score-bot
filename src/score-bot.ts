@@ -21,6 +21,8 @@ export abstract class ScoreBot {
       const newContent = message.content.substring(firstComma + 3);
       message.edit(newContent);
       message.content = newContent;
+    } else if (message.content.charAt(0) !== '_') {
+      return;
     }
 
     console.log(`${pad(message.author.username, 14)} - ${message}`);
