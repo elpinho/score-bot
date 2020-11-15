@@ -3,9 +3,8 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon",
-    "start:prod": "node build/app.js",
-    "build": "tsc && yarn cleantypes",
-    "cleantypes": "find build -type f -name *.d.ts -delete",
+    "start:prod": "NODE_ENV=production ts-node .",
+    "build": "tsc",
     "postinstall": "yarn build"
   },
   "devDependencies": {
