@@ -32,7 +32,7 @@ export class Import {
   private static async _import(cmd: CommandMessage<ImportArgs>) {
     const service: IImportExportService<ImportExportEntities> = Container.get(ImportExportService);
 
-    const entities = await service.import({
+    const entities = await service.importData({
       url: cmd.args.url,
     });
 

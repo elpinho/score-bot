@@ -22,7 +22,7 @@ export abstract class Export {
 
     try {
       const service = Container.get(ImportExportService);
-      const output = await service.export({
+      const output = await service.exportData({
         fileName,
         label,
         object: {

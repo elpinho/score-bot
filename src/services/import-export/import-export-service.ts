@@ -15,18 +15,18 @@ export interface ImportExportEntities {
 }
 
 export interface IImportExportService<T> {
-  import(options: ImportOptions): Promise<T>;
+  importData(options: ImportOptions): Promise<T>;
 
-  export(options: ExportOptions): Promise<string>;
+  exportData(options: ExportOptions): Promise<string>;
 }
 
 // Dummy class for DI
 export class ImportExportService<T> implements IImportExportService<T> {
-  import(options: ImportOptions): Promise<T> {
+  importData(options: ImportOptions): Promise<T> {
     throw new Error();
   }
 
-  export(options: ExportOptions): Promise<string> {
+  exportData(options: ExportOptions): Promise<string> {
     throw new Error();
   }
 }
